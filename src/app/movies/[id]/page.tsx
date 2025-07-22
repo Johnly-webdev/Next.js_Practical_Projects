@@ -1,33 +1,281 @@
 import React from 'react'
 import { FaStar } from 'react-icons/fa'
+import Image from 'next/image'
 
-interface MovieProps {
-  params: {
-    id: string
-  }
-}
-
-const MovieDetails = async ({ params }: MovieProps) => {
+const MovieDetails = async ({ params }: {params: {id: string}}) => {
   const movies = [
-    {
-      id: "1",
-      title: "Inception",
-      comments: 117,
-      rating: 4.7,
-      description: "A revolutionary film in terms of storytelling and direction.",
-      commentsList: ["Best movie of the year!", "Totally worth the watch.", "Just wow!"],
-      imageUrl: "data:image/jpeg;base64,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"
-    },
-    {
-      id: "2",
-      title: "Interstellar",
-      comments: 212,
-      rating: 4.9,
-      description: "A masterfully crafted tale of ambition and betrayal.",
-      commentsList: ["Best movie of the year!", "Amazing!", "Mind-blowing visuals."],
-      imageUrl: "https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg"
-    },
-  ]
+  {
+    id: "1",
+    title: "Inception",
+    comments: 117,
+    rating: 4.7,
+    description: "A revolutionary film in terms of storytelling and direction.",
+    commentsList: ["Best movie of the year!", "Totally worth the watch.", "Just wow!"],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "2",
+    title: "The Dark Knight",
+    comments: 198,
+    rating: 4.9,
+    description: "A gripping superhero thriller with one of the best villain performances ever.",
+    commentsList: ["Heath Ledger was legendary!", "Dark and intense.", "The best Batman movie!"],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "3",
+    title: "Interstellar",
+    comments: 245,
+    rating: 4.8,
+    description: "An epic science fiction film exploring time, space, and love.",
+    commentsList: ["Emotional and mind-bending.", "Hans Zimmer's score is incredible.", "Masterpiece."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "4",
+    title: "Parasite",
+    comments: 160,
+    rating: 4.6,
+    description: "A darkly comedic thriller exposing class divisions with shocking twists.",
+    commentsList: ["Totally unexpected!", "Deserved the Oscar.", "So clever and tense."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "5",
+    title: "The Matrix",
+    comments: 187,
+    rating: 4.7,
+    description: "A groundbreaking sci-fi film that redefined visual storytelling.",
+    commentsList: ["What is real?", "Changed action movies forever.", "Neo is iconic."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "6",
+    title: "Gladiator",
+    comments: 142,
+    rating: 4.5,
+    description: "A story of revenge, honor, and power in ancient Rome.",
+    commentsList: ["Are you not entertained?", "Epic!", "Russell Crowe nailed it."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "7",
+    title: "Forrest Gump",
+    comments: 190,
+    rating: 4.8,
+    description: "A heartwarming journey through American history with an unlikely hero.",
+    commentsList: ["Life is like a box of chocolates.", "So emotional!", "Perfect storytelling."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "8",
+    title: "Fight Club",
+    comments: 213,
+    rating: 4.6,
+    description: "An underground world of rebellion, identity, and chaos.",
+    commentsList: ["You don't talk about Fight Club.", "Mind-blowing twist!", "Brilliant!"],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "9",
+    title: "Pulp Fiction",
+    comments: 178,
+    rating: 4.7,
+    description: "A nonlinear crime story with unforgettable characters and dialogue.",
+    commentsList: ["Tarantino's best!", "Iconic scenes!", "Loved the style."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "10",
+    title: "The Shawshank Redemption",
+    comments: 230,
+    rating: 4.9,
+    description: "A tale of hope, friendship, and freedom behind bars.",
+    commentsList: ["Best movie ever!", "Truly inspiring.", "Unforgettable ending."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "11",
+    title: "The Godfather",
+    comments: 240,
+    rating: 4.9,
+    description: "A legendary crime saga of family and power.",
+    commentsList: ["Classic mafia drama.", "Marlon Brando was amazing.", "An offer you can't refuse."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "12",
+    title: "Whiplash",
+    comments: 134,
+    rating: 4.5,
+    description: "An intense drama about ambition, obsession, and jazz.",
+    commentsList: ["So intense!", "Incredible performances.", "Not quite my tempo."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "13",
+    title: "The Social Network",
+    comments: 115,
+    rating: 4.4,
+    description: "The rise of Facebook and the fall of friendships.",
+    commentsList: ["Smart and sharp.", "Great screenplay!", "Jesse Eisenberg was perfect."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "14",
+    title: "Joker",
+    comments: 221,
+    rating: 4.6,
+    description: "A haunting descent into madness and isolation.",
+    commentsList: ["Disturbing yet brilliant.", "Joaquin Phoenix was unreal!", "Chilling."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "15",
+    title: "Titanic",
+    comments: 300,
+    rating: 4.5,
+    description: "A romantic tragedy set against the backdrop of a historic disaster.",
+    commentsList: ["So emotional!", "A timeless classic.", "Jack and Rose forever."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "16",
+    title: "Avengers: Endgame",
+    comments: 270,
+    rating: 4.7,
+    description: "The epic finale to the Infinity Saga of the Marvel Universe.",
+    commentsList: ["Fan service done right.", "Emotional rollercoaster.", "I love you 3000."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "17",
+    title: "WALL-E",
+    comments: 150,
+    rating: 4.6,
+    description: "A heartwarming robot tale that speaks volumes without words.",
+    commentsList: ["So cute and meaningful!", "A Pixar gem.", "Love the message."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "18",
+    title: "Up",
+    comments: 175,
+    rating: 4.5,
+    description: "An old man’s adventure and a young boy’s hope-filled journey.",
+    commentsList: ["The opening scene broke me.", "So much heart.", "Beautiful animation."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "19",
+    title: "Django Unchained",
+    comments: 165,
+    rating: 4.6,
+    description: "A bold Western revenge tale with Tarantino flair.",
+    commentsList: ["Jamie Foxx killed it.", "Intense and satisfying.", "Classic Tarantino!"],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "20",
+    title: "Coco",
+    comments: 145,
+    rating: 4.5,
+    description: "A celebration of family, memory, and music.",
+    commentsList: ["So colorful!", "Miguel's journey was beautiful.", "Remember me 😢"],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "21",
+    title: "La La Land",
+    comments: 172,
+    rating: 4.4,
+    description: "A modern musical about dreams and heartbreak.",
+    commentsList: ["Loved the visuals.", "Bittersweet ending.", "Music was amazing!"],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "22",
+    title: "The Revenant",
+    comments: 138,
+    rating: 4.3,
+    description: "A brutal tale of survival and vengeance in the wilderness.",
+    commentsList: ["Leonardo DiCaprio was raw.", "Beautifully shot.", "Tense and gripping."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "23",
+    title: "The Prestige",
+    comments: 182,
+    rating: 4.6,
+    description: "Two rival magicians battle with obsession and deception.",
+    commentsList: ["Nolan does it again!", "So clever!", "That twist though!"],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "24",
+    title: "Her",
+    comments: 122,
+    rating: 4.2,
+    description: "A romantic sci-fi film about love in a digital world.",
+    commentsList: ["Unique and beautiful.", "Touching and sad.", "Joaquin Phoenix shines."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "25",
+    title: "The Lion King",
+    comments: 190,
+    rating: 4.7,
+    description: "A coming-of-age animated classic with unforgettable songs.",
+    commentsList: ["Hakuna Matata!", "So nostalgic!", "Circle of life hits hard."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "26",
+    title: "Toy Story",
+    comments: 160,
+    rating: 4.5,
+    description: "The toys come to life in Pixar’s debut masterpiece.",
+    commentsList: ["To infinity and beyond!", "Buzz and Woody are iconic.", "So imaginative."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "27",
+    title: "Blade Runner 2049",
+    comments: 140,
+    rating: 4.3,
+    description: "A visually stunning sci-fi mystery exploring identity and existence.",
+    commentsList: ["Gorgeous visuals.", "Slow burn, but worth it.", "Loved the mood."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "28",
+    title: "1917",
+    comments: 130,
+    rating: 4.4,
+    description: "A one-shot war epic with thrilling tension and heart.",
+    commentsList: ["So immersive!", "Loved the cinematography.", "Edge-of-your-seat experience."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "29",
+    title: "The Grand Budapest Hotel",
+    comments: 110,
+    rating: 4.3,
+    description: "A quirky and stylish story full of charm and color.",
+    commentsList: ["Wes Anderson's best!", "So whimsical.", "Loved the aesthetic."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  },
+  {
+    id: "30",
+    title: "Everything Everywhere All At Once",
+    comments: 200,
+    rating: 4.8,
+    description: "A multiverse story bursting with emotion, action, and originality.",
+    commentsList: ["Crazy and beautiful!", "Oscar-worthy!", "Absolutely wild ride."],
+    imageUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+  }
+];
+
 
   const movie = movies.find((movie) => movie.id === params.id)
 
@@ -36,7 +284,7 @@ const MovieDetails = async ({ params }: MovieProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 to-white px-4 py-10">
       <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <img
+        <Image
           src={movie.imageUrl}
           alt={movie.title}
           className="w-full h-96 object-cover object-center shadow-md"
