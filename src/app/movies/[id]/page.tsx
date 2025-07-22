@@ -2,7 +2,7 @@ import React from 'react'
 import { FaStar } from 'react-icons/fa'
 import Image from 'next/image'
 
-const MovieDetails = async ({ params }: {params: {id: string}}) => {
+export default function MovieDetails({ params }: {params: {id: string}}) {
   const movies = [
   {
     id: "1",
@@ -287,10 +287,13 @@ const MovieDetails = async ({ params }: {params: {id: string}}) => {
         <Image
           src={movie.imageUrl}
           alt={movie.title}
+          width={400}
+          height={300}
           className="w-full h-96 object-cover object-center shadow-md"
         />
 
         <div className="p-8">
+          <div className="flex flex-col justify-center items center">
           <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-2">
             {movie.title}
           </h2>
@@ -298,6 +301,7 @@ const MovieDetails = async ({ params }: {params: {id: string}}) => {
           <p className="text-gray-700 text-lg mb-6 leading-relaxed">
             {movie.description}
           </p>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
             <div className="flex items-center gap-3">
@@ -332,5 +336,3 @@ const MovieDetails = async ({ params }: {params: {id: string}}) => {
     </div>
   )
 }
-
-export default MovieDetails
